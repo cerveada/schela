@@ -3,8 +3,12 @@ package cz.cvut.fit.cerveada.schela
 import scala.util.parsing.combinator._
 import scala.util.matching.Regex
 
-class TokenParser extends JavaTokenParsers  {
+object TokenParser extends JavaTokenParsers  {
   override def skipWhitespace = true
+  
+  def parseItem(str: String) = parse(code, str) 
+  
+  def code:Parser[Value] = (datum | list | quote)
   
   //Data
   def datum = (number | boolean | string | symbol)
@@ -16,4 +20,9 @@ class TokenParser extends JavaTokenParsers  {
   def symbol = identifier ^^ {case v => Symbol(v)}
   def identifier:Parser[String] =  """[A-Za-z+*-/][A-Za-z0-9+*?!_]*""".r
   
+  def list = "(" ~> listContent <~ ")" ^^ {case v => SList(v)}
+  def listContent:Parser[List[Form]] = rep(code)  ^^ (List() ++ _)
+  
+  
+  def quote:Parser[Value] = ( "'" | "quote") ~> code ^^ (s => Quote(s)) 
 }

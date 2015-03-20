@@ -1,9 +1,5 @@
 package cz.cvut.fit.cerveada.schela
 
-/**
- * Hello world!
- *
- */
 object Schela {
   def main(args: Array[String]) {
     println("Welcome to Schela! Scheme interpreter in Scala")
@@ -17,18 +13,18 @@ object Schela {
   }
 
   def parse(s: String) = {
-    val result = CalcParser.parseItem(s)
+    val result = TokenParser.parseItem(s)
     result match {
-      case CalcParser.Success(result, _) => println(result.toString)
-      case CalcParser.Failure(msg, _)    => throw new Exception("parse failed: " + msg)
-      case CalcParser.Error(msg, _)      => throw new Exception("parse error: " + msg)
+      case TokenParser.Success(result, _) => println(result.toString)
+      case TokenParser.Failure(msg, _)    => throw new Exception("parse failed: " + msg)
+      case TokenParser.Error(msg, _)      => throw new Exception("parse error: " + msg)
     }
     result.get
   }
 
   def evaluate(expr: Form, environment: Environment) = {
     try {
-      val result = expr.evaluate(environment)
+      val result = Evaluator.eval(expr, environment)
       println(result)
     } catch {
       case e: LispException => println(e.message)

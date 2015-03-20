@@ -7,8 +7,8 @@ abstract class UnitSpec extends FlatSpec with Matchers with
 
  
   def eval(code:String, environment:Environment):Value = {
-    val syntacticTree = CalcParser.parseItem(code).get
-    syntacticTree.evaluate(environment)
+    val syntacticTree = TokenParser.parseItem(code).get
+    Evaluator.eval(syntacticTree, environment)
   }
   
 }

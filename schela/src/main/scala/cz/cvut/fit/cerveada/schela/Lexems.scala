@@ -25,12 +25,6 @@ case class FunCall(name:String, params:List[Form]) extends Form {
   }
 }
 
-case class Symbol(name:String) extends Form {
-    def evaluate(context:Environment) = {
-    println("searching for variable " + name);
-    context.get(name)
-  }
-}
 
 case class Lambda(paramNames:List[String], body:Form) extends Form {
     def evaluate(environment:Environment) = {

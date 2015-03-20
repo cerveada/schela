@@ -2,7 +2,7 @@ package cz.cvut.fit.cerveada.schela
 
 import scala.util.parsing.combinator._
 import scala.util.matching.Regex
-
+/*
 object CalcParser extends TokenParser {
   override def skipWhitespace = true
   
@@ -42,3 +42,4 @@ object CalcParser extends TokenParser {
   private def callParams:Parser[List[Form]] = rep(expr) ^^ (List() ++ _)
   
 }
+*/

@@ -22,18 +22,32 @@ case class SProcedure(paramNames: List[String], body: Form, homeEnvironment: Env
   def call(params: List[Value]) = {
     if (paramNames.size != params.size)
       throw new UnexpectedNumberOfArguments(params.size, paramNames.size)
-    
+
     val localEnvironment = new LocalEnvironment(homeEnvironment)
     paramNames.zip(params).foreach { case (n, v) => localEnvironment.define(n, v) }
-    body.evaluate(localEnvironment);
+    Evaluator.eval(body, localEnvironment);
   }
 }
 
-case class Bool(b:Boolean) extends Value {
+case class Bool(b: Boolean) extends Value {
   def typeName = "boolean"
 }
 
-case class SString(value:String) extends Value {
+case class SString(value: String) extends Value {
   def typeName = "string"
+}
+
+case class SList(values: List[Form]) extends Value {
+  def typeName = "list"
+
+}
+
+case class Quote(form:Value) extends Value {
+  def typeName = "quote"
+
+}
+
+case class Symbol(name:String) extends Value {
+    def typeName = "symvbol"
 }
 
