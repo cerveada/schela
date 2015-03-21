@@ -1,25 +1,25 @@
 package cz.cvut.fit.cerveada.schela
 
-abstract class Value extends Form {
+trait Form  {
   def evaluate(environment: Environment) = this
   def typeName(): String
 }
 
-case class Number(value: Int) extends Value {
+case class Number(value: Int) extends Form {
   def typeName = "number"
 }
 
-case class Unspecified() extends Value {
+case class Unspecified() extends Form {
   def typeName = "unspecified"
 }
 
-abstract class Procedure() extends Value {
-  def call(params: List[Value]): Value;
+abstract class Procedure() extends Form {
+  def call(params: List[Form]): Form;
   def typeName = "procedure"
 }
 
 case class SProcedure(paramNames: List[String], body: Form, homeEnvironment: Environment) extends Procedure {
-  def call(params: List[Value]) = {
+  def call(params: List[Form]) = {
     if (paramNames.size != params.size)
       throw new UnexpectedNumberOfArguments(params.size, paramNames.size)
 
@@ -29,25 +29,25 @@ case class SProcedure(paramNames: List[String], body: Form, homeEnvironment: Env
   }
 }
 
-case class Bool(b: Boolean) extends Value {
+case class Bool(b: Boolean) extends Form {
   def typeName = "boolean"
 }
 
-case class SString(value: String) extends Value {
+case class SString(value: String) extends Form {
   def typeName = "string"
 }
 
-case class SList(values: List[Form]) extends Value {
+case class SList(values: List[Form]) extends Form {
   def typeName = "list"
 
 }
 
-case class Quote(form:Value) extends Value {
+case class Quote(form:Form) extends Form {
   def typeName = "quote"
 
 }
 
-case class Symbol(name:String) extends Value {
+case class Symbol(name:String) extends Form {
     def typeName = "symvbol"
 }
 

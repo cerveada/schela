@@ -2,7 +2,7 @@ package cz.cvut.fit.cerveada.schela
 
 object Evaluator {
   
-  def eval(code:Form, environment:Environment):Value = code match {
+  def eval(code:Form, environment:Environment):Form = code match {
     case b:Bool => b
     case b:Number => b
     case b:SString => b    
@@ -16,18 +16,16 @@ object Evaluator {
     case Symbol("set!") :: rest => set(rest, env)
     case Symbol("lambda") :: SList(params) :: expr :: Nil => lambda(params, expr, env)      
     case Symbol("if") :: rest => ifElse(rest, env)
-    case Symbol(a) :: rest => evalApplication(a, rest, env) 
+    case a :: rest => evalApplication(a, rest, env) 
   }
 
-  def evalApplication(name: String, params: List[Form], environment: Environment): Value = {
-    println("calling fubnction " + name);
+  def evalApplication(fun: Form, params: List[Form], env: Environment): Form = {
 
-    val executedParams = params.map { eval(_, environment) }
+    val executedParams = params.map { eval(_, env) }
 
-    environment.get(name) match {
-      case p: Procedure =>
-        p.evaluate(environment); p.call(executedParams)
-      case _            => throw new LispException(s"$name is not a function")
+    eval(fun, env) match {
+      case p: Procedure => p.call(executedParams)
+      case x            => throw new LispException(s"$x is not a procedure")
     }
   }
 
@@ -49,12 +47,6 @@ object Evaluator {
   }
 
   def lambda(params: List[Form], body:Form, env: Environment) = {
-    /*
-    val (params, body) = l match {
-      case SList(params) :: expr :: Nil => (params, expr)
-      case _                            => throw new LispException("parsing exception")
-
-    }*/
     val paramNames = params.map { x =>
       x match {
         case Symbol(x) => x
@@ -68,7 +60,7 @@ object Evaluator {
     val (predicate, thanExp, elseExp) = l match {
       case predicate :: thanExp :: elseExp :: Nil => (predicate, thanExp, Some(elseExp))
       case predicate :: thanExp :: Nil            => (predicate, thanExp, None)
-      case _                                    => throw new LispException("parsing exception")
+      case _                                      => throw new LispException("parsing exception")
     }
     eval(predicate, env) match {
       case Bool(true)  => eval(thanExp, env)

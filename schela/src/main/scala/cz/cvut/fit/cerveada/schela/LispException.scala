@@ -7,7 +7,7 @@ class LispException(val message:String) extends Exception
 class UnexpectedNumberOfArguments(val given:Int, val expected:Int) 
 extends LispException(s"Unexpected number of arguments: ${given} expected: ${expected}")
 
-class UnexpectedType(val given:Value, val expected:Value)
+class UnexpectedType(val given:Form, val expected:Form)
 extends LispException(s"Unexpected type, found: ${given.typeName} expected: ${expected.typeName}")
 
 class VariableNotBound(name:String)

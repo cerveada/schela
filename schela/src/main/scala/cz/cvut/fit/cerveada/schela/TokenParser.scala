@@ -8,7 +8,7 @@ object TokenParser extends JavaTokenParsers  {
   
   def parseItem(str: String) = parse(code, str) 
   
-  def code:Parser[Value] = (datum | list | quote)
+  def code:Parser[Form] = (datum | quote | list)
   
   //Data
   def datum = (number | boolean | string | symbol)
@@ -23,6 +23,7 @@ object TokenParser extends JavaTokenParsers  {
   def list = "(" ~> listContent <~ ")" ^^ {case v => SList(v)}
   def listContent:Parser[List[Form]] = rep(code)  ^^ (List() ++ _)
   
-  
-  def quote:Parser[Value] = ( "'" | "quote") ~> code ^^ (s => Quote(s)) 
+  def quote = (quoteChar | quoteWord)
+  def quoteChar:Parser[Form] = "'" ~> code ^^ (s => Quote(s)) 
+  def quoteWord:Parser[Form] = "(" ~> "quote" ~> code <~ ")" ^^ (s => Quote(s)) 
 }
