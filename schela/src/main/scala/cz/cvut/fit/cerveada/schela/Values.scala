@@ -1,5 +1,7 @@
 package cz.cvut.fit.cerveada.schela
 
+
+
 trait Form  {
   def evaluate(environment: Environment) = this
   def typeName(): String
@@ -29,17 +31,16 @@ case class SProcedure(paramNames: List[String], body: Form, homeEnvironment: Env
   }
 }
 
+case class NativeProcedure(func: List[Form] => Form) extends Procedure {
+  def call(params: List[Form]) = func(params);
+}
+
 case class Bool(b: Boolean) extends Form {
   def typeName = "boolean"
 }
 
 case class SString(value: String) extends Form {
   def typeName = "string"
-}
-
-case class SList(values: List[Form]) extends Form {
-  def typeName = "list"
-
 }
 
 case class Quote(form:Form) extends Form {
@@ -51,3 +52,14 @@ case class Symbol(name:String) extends Form {
     def typeName = "symvbol"
 }
 
+case class SList(l:List[Form] = Nil) extends Form {
+  def typeName = "list"
+  override def toString = {
+    val strings = l.map { _.toString }
+    "SList(" + strings.mkString(", ") + ")"
+  }
+  
+}
+object SList {
+	implicit def schemeToList(slist:SList) = slist.l
+}

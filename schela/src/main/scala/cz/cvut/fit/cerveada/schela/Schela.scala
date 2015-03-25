@@ -25,7 +25,7 @@ object Schela {
   def evaluate(expr: Form, environment: Environment) = {
     try {
       val result = Evaluator.eval(expr, environment)
-      println(result)
+      println("> " + result)
     } catch {
       case e: LispException => println(e.message)
     }

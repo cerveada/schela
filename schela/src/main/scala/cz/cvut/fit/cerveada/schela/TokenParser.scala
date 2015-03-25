@@ -12,13 +12,16 @@ object TokenParser extends JavaTokenParsers  {
   
   //Data
   def datum = (number | boolean | string | symbol)
-  def number:Parser[Number] = regex(new Regex("[0-9]+")) ^^ (s => Number(s.toInt))
+  def number:Parser[Number] = regex(new Regex("-?[0-9]+")) ^^ (s => Number(s.toInt))
   def boolean = ("#t" | "#f") ^^ { case "#t" => Bool(true); case "#f" => Bool(false) }
   //private def string = /*"\"" ~>*/ stringLiteral/* <~ "\""*/ ^^ { case s => SString(s) }
   def string = "\"" ~> """([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*""".r <~ "\"" ^^ 
     { case s => SString(s) }
   def symbol = identifier ^^ {case v => Symbol(v)}
-  def identifier:Parser[String] =  """[A-Za-z+*-/][A-Za-z0-9+*?!_]*""".r
+  def identifier:Parser[String] = (identInitial | "+" | "-")
+  def identInitial = """[A-Za-z!$%&*/:<=>?~_^][A-Za-z!$%&*/:<=>?~_^0-9.+-]*""".r
+  
+  // | ! | $ | % | & | * | / | : | < | = | > | ? | ~ | _ | ^
   
   def list = "(" ~> listContent <~ ")" ^^ {case v => SList(v)}
   def listContent:Parser[List[Form]] = rep(code)  ^^ (List() ++ _)

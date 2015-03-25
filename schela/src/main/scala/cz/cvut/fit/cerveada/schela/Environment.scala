@@ -1,5 +1,11 @@
 package cz.cvut.fit.cerveada.schela
 
+import cz.cvut.fit.cerveada.schela.natives.BooleanNatives
+import cz.cvut.fit.cerveada.schela.natives.NumberNatives
+import cz.cvut.fit.cerveada.schela.natives.Eql
+import cz.cvut.fit.cerveada.schela.natives.Eq
+import cz.cvut.fit.cerveada.schela.natives.Display
+
 abstract class Environment {
 	protected val variables = scala.collection.mutable.Map[String, Form]();
   
@@ -46,12 +52,10 @@ class TopEnvironment extends Environment {
       case false => throw new VariableNotBound(name)
     }
   }
-  
-  variables += ("+" -> Sum());  
-  variables += ("*" -> Mul());  
-  variables += ("-" -> Subtraction());
-  variables += ("/" -> Division());  
   variables += ("eq?" -> Eq());  
   variables += ("eql?" -> Eql());  
   variables += ("display" -> Display());  
+  variables ++= BooleanNatives.natives.mapValues(NativeProcedure(_))
+  variables ++= NumberNatives.natives.mapValues(NativeProcedure(_))
+  
 }
