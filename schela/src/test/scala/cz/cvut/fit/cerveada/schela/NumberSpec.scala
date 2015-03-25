@@ -106,8 +106,8 @@ class NumberSpec extends UnitSpec {
 	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(negative? 5 6)", env)
 	  an[UnexpectedType] should be thrownBy eval("(negative? 'a)", env)
 	  eval("(negative? 1)", env) should be(Bool(false))
-	  eval("(negative? -1)", env) should be(Bool(false))
-	  eval("(negative? 0)", env) should be(Bool(true))
+	  eval("(negative? -1)", env) should be(Bool(true))
+	  eval("(negative? 0)", env) should be(Bool(false))
   }
   
   "A odd?" should "work corectly" in {
@@ -158,7 +158,7 @@ class NumberSpec extends UnitSpec {
 	  an[UnexpectedType] should be thrownBy eval("(min 5 10 23 'a 56)", env)
 	  
 	  eval("(min 156 556 6 4 619 89 11)", env) should be(Number(4))
-	  eval("(min 156 -556 6 4 -619 89 -11)", env) should be(Number(619))
+	  eval("(min 156 -556 6 4 -619 89 -11)", env) should be(Number(-619))
 	  eval("(min -156 556 6 4 619 -89 -11)", env) should be(Number(-156))
   }
   

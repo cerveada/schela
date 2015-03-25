@@ -77,4 +77,40 @@ object NumberNatives {
   }
 
 
+  natives("zero?") = numberPropertyCall((a) => a == 0)
+  natives("positive?") = numberPropertyCall((a) => a > 0)
+  natives("negative?") = numberPropertyCall((a) => a < 0)
+  natives("odd?") = numberPropertyCall((a) => a % 2 != 0)
+  natives("even?") = numberPropertyCall((a) => a % 2 == 0)
+  def numberPropertyCall(fun:(Int) => Boolean)(params: List[Form]): Form = params match {
+    case Number(v) :: Nil => if(fun(v)) Bool(true) else Bool(false)
+    case t :: Nil         => throw new UnexpectedType(t, Number(0));
+    case _                => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+
+  
+  natives("max") = maxCall
+  def maxCall(params: List[Form]): Number = {
+    if (params.isEmpty)
+      throw new UnexpectedNumberOfArguments(params.size, 1)
+
+    val values = params.map {
+      case x: Number => x.value
+      case t         => throw new UnexpectedType(t, Number(0));
+    }
+    Number(values.max);
+  }
+
+  
+  natives("min") = minCall
+  def minCall(params: List[Form]): Number = {
+    if (params.isEmpty)
+      throw new UnexpectedNumberOfArguments(params.size, 1)
+
+    val values = params.map {
+      case x: Number => x.value
+      case t         => throw new UnexpectedType(t, Number(0));
+    }
+    Number(values.min);
+  }
 }
