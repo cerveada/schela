@@ -113,4 +113,25 @@ object NumberNatives {
     }
     Number(values.min);
   }
+
+  
+  natives("abs") = absCall
+  def absCall(params: List[Form]): Number = params match {
+    case Number(v) :: Nil => Number(scala.math.abs(v))
+    case t :: Nil         => throw new UnexpectedType(t, Number(0));
+    case _                => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+
+  
+  natives("quotient") = integerDivisionCall((n1, n2) => n1/ n2)
+  natives("remainder") = integerDivisionCall((n1, n2) => n1 % n2)
+  natives("modulo") = integerDivisionCall((n1, n2) => (n1 % n2 + n2) % n2)
+  def integerDivisionCall(fun: (Int, Int) => Int)(params: List[Form]): Number =
+    params match {
+      case Number(n1) :: Number(n2) :: Nil => Number(fun(n1,n2))
+      case Number(_) :: t :: Nil           => throw new UnexpectedType(t, Number(0));
+      case t :: Number(_) :: Nil           => throw new UnexpectedType(t, Number(0));
+      case t :: t2 :: Nil                  => throw new UnexpectedType(t, Number(0));
+      case _                               => throw new UnexpectedNumberOfArguments(params.size, 1)
+    }
 }

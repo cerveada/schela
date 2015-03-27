@@ -162,5 +162,63 @@ class NumberSpec extends UnitSpec {
 	  eval("(min -156 556 6 4 619 -89 -11)", env) should be(Number(-156))
   }
   
+  "A abs" should "return the magnitude of its argument. " in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs 1 6)", env)
+	  an[UnexpectedType] should be thrownBy eval("(abs 'a)", env)
+	  
+	  eval("(abs 1)", env) should be(Number(1))
+	  eval("(abs -1)", env) should be(Number(1))
+	  eval("(abs 42)", env) should be(Number(42))
+	  eval("(abs -42)", env) should be(Number(42))
+  }
+ 
+  "A quotient" should "return corect result" in {
+    
+    val env = new TopEnvironment()
+    
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(quotient)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(quotient 1 6 5)", env)
+    an[UnexpectedType] should be thrownBy eval("(quotient 'a 5)", env)
+    
+    eval("(quotient 13 4)", env) should be(Number(3))
+    eval("(quotient 3 4)", env) should be(Number(0))
+    eval("(quotient 19 8)", env) should be(Number(2))
+    eval("(quotient -13 -4)", env) should be(Number(3))
+    eval("(quotient -13 4)", env) should be(Number(-3))
+    eval("(quotient 13 -4)", env) should be(Number(-3))
+  }
+  
+  "A modulo" should "return corect result" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo 1 6 5)", env)
+	  an[UnexpectedType] should be thrownBy eval("(modulo 'a 5)", env)
+	  
+	  eval("(modulo 13 4)", env) should be(Number(1))
+	  eval("(modulo -13 4)", env) should be(Number(3))
+	  eval("(modulo 13 -4)", env) should be(Number(-3))
+	  eval("(modulo -13 -4)", env) should be(Number(-1))
+  }
+  
+  "A remainder" should "return corect result" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder 1 6 5)", env)
+	  an[UnexpectedType] should be thrownBy eval("(remainder 'a 5)", env)
+	  
+	  eval("(remainder 13 4)", env) should be(Number(1))
+	  eval("(remainder -13 4)", env) should be(Number(-1))
+	  eval("(remainder 13 -4)", env) should be(Number(1))
+	  eval("(remainder -13 -4)", env) should be(Number(-1))
+  }
+  
   
 }
