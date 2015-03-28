@@ -304,5 +304,33 @@ class NumberSpec extends UnitSpec {
     eval("(remainder 13 -4)", env) should be(Number(1))
     eval("(remainder -13 -4)", env) should be(Number(-1))
   }
+  
+  "A gcd" should "return greatest common divisor of two or more integers" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(gcd)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(gcd 6)", env)
+	  an[UnexpectedType] should be thrownBy eval("(gcd 8 'a 5)", env)
+	  
+	  eval("(gcd 56 42)", env) should be(Number(14))
+	  eval("(gcd 666 128)", env) should be(Number(2))
+	  eval("(gcd 1024 997)", env) should be(Number(1))
+	  eval("(gcd 36 27 45 81 )", env) should be(Number(9))
+  }
+  
+  "A lcm" should "return greatest common divisor of two or more integers" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(lcm)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(lcm 6)", env)
+	  an[UnexpectedType] should be thrownBy eval("(lcm 8 'a 5)", env)
+	  
+	  eval("(lcm 56 42)", env) should be(Number(168))
+	  eval("(lcm 666 128)", env) should be(Number(42624))
+	  eval("(lcm 1024 997)", env) should be(Number(1020928))
+	  eval("(lcm 36 27 45 81 )", env) should be(Number(1620))
+  }
 
 }

@@ -20,14 +20,6 @@ object NumberNatives {
   natives("exact?") = numberPropertyCall(_ => true)
   natives("inexact?") = numberPropertyCall(_ => false)
 
-  def divListCall(params: List[Form]) = {
-    val values = params.map {
-      case x: Number => x.value
-      case v         => throw new UnexpectedType(v, Number(0))
-    }
-    Number(values.reduce(_ / _));
-  }
-
   natives("=") = comparatorCall((a, b) => a == b)
   natives("<") = comparatorCall((a, b) => a < b)
   natives(">") = comparatorCall((a, b) => a > b)
@@ -121,6 +113,14 @@ object NumberNatives {
     case l                => divListCall(l)
   }
 
+  def divListCall(params: List[Form]) = {
+    val values = params.map {
+      case x: Number => x.value
+      case v         => throw new UnexpectedType(v, Number(0))
+    }
+    Number(values.reduce(_ / _));
+  }
+
   natives("abs") = absCall
   def absCall(params: List[Form]): Number = params match {
     case Number(v) :: Nil => Number(scala.math.abs(v))
@@ -139,4 +139,22 @@ object NumberNatives {
       case t :: t2 :: Nil                  => throw new UnexpectedType(t, Number(0));
       case _                               => throw new UnexpectedNumberOfArguments(params.size, 1)
     }
+
+  natives("gcd") = reduceCall(gcd)
+  natives("lcm") = reduceCall(lcm)
+  def reduceCall(fun: (Int, Int) => Int)(params: List[Form]): Form = params match {
+    case Nil      => throw new UnexpectedNumberOfArguments(0, 2)
+    case t :: Nil => throw new UnexpectedNumberOfArguments(1, 2)
+    case l        => reduceListCall(fun)(l)
+  }
+  def reduceListCall(fun: (Int, Int) => Int)(params: List[Form]) = {
+    val values = params.map {
+      case x: Number => x.value
+      case v         => throw new UnexpectedType(v, Number(0))
+    }
+    Number(values.reduce(fun(_, _)));
+  }
+  def gcd(a: Int, b: Int): Int = if (b == 0) a.abs else gcd(b, a % b)
+  def lcm(a: Int, b: Int) = (a * b).abs / gcd(a, b)
+  
 }
