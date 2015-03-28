@@ -305,7 +305,7 @@ class NumberSpec extends UnitSpec {
     eval("(remainder -13 -4)", env) should be(Number(-1))
   }
   
-  "A gcd" should "return greatest common divisor of two or more integers" in {
+  "A gcd" should "return the greatest common divisor of two or more integers" in {
 	  
 	  val env = new TopEnvironment()
 	  
@@ -319,7 +319,7 @@ class NumberSpec extends UnitSpec {
 	  eval("(gcd 36 27 45 81 )", env) should be(Number(9))
   }
   
-  "A lcm" should "return greatest common divisor of two or more integers" in {
+  "A lcm" should "return the least common multiple of two or more integers" in {
 	  
 	  val env = new TopEnvironment()
 	  
@@ -331,6 +331,42 @@ class NumberSpec extends UnitSpec {
 	  eval("(lcm 666 128)", env) should be(Number(42624))
 	  eval("(lcm 1024 997)", env) should be(Number(1020928))
 	  eval("(lcm 36 27 45 81 )", env) should be(Number(1620))
+  }
+  
+  "A floor" should "return the largest integer not larger than x" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(floor)", env)
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(floor 6 9)", env)
+	  an[UnexpectedType] should be thrownBy eval("(floor 'a)", env)
+	  
+	  eval("(floor 56)", env) should be(Number(56))
+	  eval("(floor -666)", env) should be(Number(-666))
+  }
+  
+  
+  "A number->string" should "return the string representation fo number" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(number->string)", env)
+	  an[UnexpectedType] should be thrownBy eval("(number->string 'a)", env)
+	  
+	  eval("(number->string 56)", env) should be(SString("56"))
+	  eval("(number->string -666)", env) should be(SString("-666"))
+  }
+  
+  "A string->number" should "return the string representation fo number" in {
+	  
+	  val env = new TopEnvironment()
+	  
+	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(string->number)", env)
+	  an[UnexpectedType] should be thrownBy eval("(string->number 'a)", env)
+	  an[LispException] should be thrownBy eval("(string->number \"olgojchotchoj\")", env)
+	  
+	  eval("(string->number \"56\")", env) should be(Number(56))
+	  eval("(string->number \"-666\")", env) should be(Number(-666))
   }
 
 }

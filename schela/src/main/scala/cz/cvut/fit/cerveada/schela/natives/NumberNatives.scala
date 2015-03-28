@@ -1,6 +1,7 @@
 package cz.cvut.fit.cerveada.schela.natives
 
 import cz.cvut.fit.cerveada.schela._
+import java.lang.NumberFormatException;
 
 object NumberNatives {
   type procedureType = List[Form] => Form
@@ -142,7 +143,7 @@ object NumberNatives {
 
   natives("gcd") = reduceCall(gcd)
   natives("lcm") = reduceCall(lcm)
-  def reduceCall(fun: (Int, Int) => Int)(params: List[Form]): Form = params match {
+  def reduceCall(fun: (Int, Int) => Int)(params: List[Form]): Number = params match {
     case Nil      => throw new UnexpectedNumberOfArguments(0, 2)
     case t :: Nil => throw new UnexpectedNumberOfArguments(1, 2)
     case l        => reduceListCall(fun)(l)
@@ -156,5 +157,36 @@ object NumberNatives {
   }
   def gcd(a: Int, b: Int): Int = if (b == 0) a.abs else gcd(b, a % b)
   def lcm(a: Int, b: Int) = (a * b).abs / gcd(a, b)
+
+  natives("floor") = idnetityCall
+  natives("ceiling") = idnetityCall
+  natives("truncate") = idnetityCall
+  natives("round") = idnetityCall
+  def idnetityCall(params: List[Form]): Number = params match {
+    case (n: Number) :: Nil => n
+    case t :: Nil           => throw new UnexpectedType(t, Number(0));
+    case l                  => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
   
+  natives("number->string") = toStringCall
+  def toStringCall(params: List[Form]): SString = params match {
+    case Number(v) :: Nil => SString(v.toString())
+    case t :: Nil         => throw new UnexpectedType(t, Number(0));
+    case l                => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+
+  natives("string->number") = toNumberCall
+  def toNumberCall(params: List[Form]): Number = params match {
+    case SString(v) :: Nil => stringToNumber(v)
+    case t :: Nil          => throw new UnexpectedType(t, Number(0));
+    case l                 => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+  def stringToNumber(s: String): Number = {
+    try {
+      Number(s.toInt)
+    } catch {
+      case e: NumberFormatException => throw new LispException("wrong number format")
+    }
+  }
+
 }
