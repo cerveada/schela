@@ -2,6 +2,47 @@ package cz.cvut.fit.cerveada.schela
 
 class NumberSpec extends UnitSpec {
 
+  "A number?" should "work corecty" in {
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(number?)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(number? 5 45)", env)
+    eval("(number? 5)", env) should be(Bool(true))
+    eval("(number? 199)", env) should be(Bool(true))
+    eval("(number? -89)", env) should be(Bool(true))
+
+    eval("(number? 'a)", env) should be(Bool(false))
+    eval("(number? \"ahoj\")", env) should be(Bool(false))
+    eval("(number? #t)", env) should be(Bool(false))
+  }
+
+  "An exact?" should "work corectly" in {
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(exact?)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(exact? 5 45)", env)
+    an[UnexpectedType] should be thrownBy eval("(exact? 'a)", env)
+
+    eval("(exact? 5)", env) should be(Bool(true))
+    eval("(exact? 199)", env) should be(Bool(true))
+    eval("(exact? -89)", env) should be(Bool(true))
+  }
+
+  "An inexact?" should "work corectly" in {
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(inexact?)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(inexact? 5 45)", env)
+    an[UnexpectedType] should be thrownBy eval("(inexact? 'a)", env)
+
+    eval("(inexact? 5)", env) should be(Bool(false))
+    eval("(inexact? 199)", env) should be(Bool(false))
+    eval("(inexact? -89)", env) should be(Bool(false))
+  }
+
   "A =" should "work corecty" in {
 
     val env = new TopEnvironment()
@@ -76,66 +117,66 @@ class NumberSpec extends UnitSpec {
     eval("(>= 9 9 9 9 9)", env) should be(Bool(true))
     eval("(>= 5 6 4 3 9 10)", env) should be(Bool(false))
   }
-  
+
   "A zero?" should "work corectly" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(zero? 5 6)", env)
-	  an[UnexpectedType] should be thrownBy eval("(zero? 'a)", env)
-	  eval("(zero? 1)", env) should be(Bool(false))
-	  eval("(zero? -1)", env) should be(Bool(false))
-	  eval("(zero? 0)", env) should be(Bool(true))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(zero? 5 6)", env)
+    an[UnexpectedType] should be thrownBy eval("(zero? 'a)", env)
+    eval("(zero? 1)", env) should be(Bool(false))
+    eval("(zero? -1)", env) should be(Bool(false))
+    eval("(zero? 0)", env) should be(Bool(true))
   }
- 
+
   "A positive?" should "work corectly" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(positive? 5 6)", env)
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(positive? 5 6)", env)
     an[UnexpectedType] should be thrownBy eval("(positive? 'a)", env)
     eval("(positive? 1)", env) should be(Bool(true))
     eval("(positive? -1)", env) should be(Bool(false))
     eval("(positive? 0)", env) should be(Bool(false))
   }
-  
+
   "A negative?" should "work corectly" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(negative? 5 6)", env)
-	  an[UnexpectedType] should be thrownBy eval("(negative? 'a)", env)
-	  eval("(negative? 1)", env) should be(Bool(false))
-	  eval("(negative? -1)", env) should be(Bool(true))
-	  eval("(negative? 0)", env) should be(Bool(false))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(negative? 5 6)", env)
+    an[UnexpectedType] should be thrownBy eval("(negative? 'a)", env)
+    eval("(negative? 1)", env) should be(Bool(false))
+    eval("(negative? -1)", env) should be(Bool(true))
+    eval("(negative? 0)", env) should be(Bool(false))
   }
-  
+
   "A odd?" should "work corectly" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(odd? 5 6)", env)
-	  an[UnexpectedType] should be thrownBy eval("(odd? 'a)", env)
-    
-	  eval("(odd? 2)", env) should be(Bool(false))
-	  eval("(odd? 1)", env) should be(Bool(true))
-	  eval("(odd? 0)", env) should be(Bool(false))
-	  eval("(odd? -1)", env) should be(Bool(true))
-	  eval("(odd? -2)", env) should be(Bool(false))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(odd? 5 6)", env)
+    an[UnexpectedType] should be thrownBy eval("(odd? 'a)", env)
+
+    eval("(odd? 2)", env) should be(Bool(false))
+    eval("(odd? 1)", env) should be(Bool(true))
+    eval("(odd? 0)", env) should be(Bool(false))
+    eval("(odd? -1)", env) should be(Bool(true))
+    eval("(odd? -2)", env) should be(Bool(false))
   }
-  
+
   "A even?" should "work corectly" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(even? 5 6)", env)
-	  an[UnexpectedType] should be thrownBy eval("(even? 'a)", env)
-	  
-	  eval("(even? 2)", env) should be(Bool(true))
-	  eval("(even? 1)", env) should be(Bool(false))
-	  eval("(even? 0)", env) should be(Bool(true))
-	  eval("(even? -1)", env) should be(Bool(false))
-	  eval("(even? -2)", env) should be(Bool(true))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(even? 5 6)", env)
+    an[UnexpectedType] should be thrownBy eval("(even? 'a)", env)
+
+    eval("(even? 2)", env) should be(Bool(true))
+    eval("(even? 1)", env) should be(Bool(false))
+    eval("(even? 0)", env) should be(Bool(true))
+    eval("(even? -1)", env) should be(Bool(false))
+    eval("(even? -2)", env) should be(Bool(true))
   }
 
   "A max" should " return the maximum of its arguments" in {
@@ -149,41 +190,85 @@ class NumberSpec extends UnitSpec {
     eval("(max 156 -556 6 4 -619 89 -11)", env) should be(Number(156))
     eval("(max -156 -556 6 4 -619 -89 -11)", env) should be(Number(6))
   }
-  
+
   "A min" should "return the minimum of its arguments" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(min)", env)
-	  an[UnexpectedType] should be thrownBy eval("(min 5 10 23 'a 56)", env)
-	  
-	  eval("(min 156 556 6 4 619 89 11)", env) should be(Number(4))
-	  eval("(min 156 -556 6 4 -619 89 -11)", env) should be(Number(-619))
-	  eval("(min -156 556 6 4 619 -89 -11)", env) should be(Number(-156))
-  }
-  
-  "A abs" should "return the magnitude of its argument. " in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs)", env)
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs 1 6)", env)
-	  an[UnexpectedType] should be thrownBy eval("(abs 'a)", env)
-	  
-	  eval("(abs 1)", env) should be(Number(1))
-	  eval("(abs -1)", env) should be(Number(1))
-	  eval("(abs 42)", env) should be(Number(42))
-	  eval("(abs -42)", env) should be(Number(42))
-  }
- 
-  "A quotient" should "return corect result" in {
-    
+
     val env = new TopEnvironment()
-    
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(min)", env)
+    an[UnexpectedType] should be thrownBy eval("(min 5 10 23 'a 56)", env)
+
+    eval("(min 156 556 6 4 619 89 11)", env) should be(Number(4))
+    eval("(min 156 -556 6 4 -619 89 -11)", env) should be(Number(-619))
+    eval("(min -156 556 6 4 619 -89 -11)", env) should be(Number(-156))
+  }
+
+  "A +" should "work corecty" in {
+
+    val environment = new TopEnvironment()
+
+    eval("(+)", environment) should be(Number(0))
+    eval("(+ 15)", environment) should be(Number(15))
+    eval("(+ 5 15)", environment) should be(Number(20))
+    eval("(+ 5 3 500 1)", environment) should be(Number(509))
+  }
+
+  "A *" should "work corecty" in {
+
+    val environment = new TopEnvironment()
+
+    eval("(*)", environment) should be(Number(1))
+    eval("(* 15)", environment) should be(Number(15))
+    eval("(* 5 15)", environment) should be(Number(75))
+    eval("(* 5 3 500 1)", environment) should be(Number(7500))
+  }
+
+  "A -" should "work corecty" in {
+
+    val environment = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(-)", environment)
+    eval("(- 15)", environment) should be(Number(-15))
+    eval("(- 5 15)", environment) should be(Number(-10))
+    eval("(- 5 3 500 1)", environment) should be(Number(-499))
+  }
+
+  /*
+   * TODO - hard to test for integers only
+   * 
+   */
+  "A /" should "work corecty" in {
+
+    val environment = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(/)", environment)
+    eval("(/ 15)", environment) should be(Number(0))
+    eval("(/ 15 5)", environment) should be(Number(3))
+    eval("(/ 3000 3 500 1)", environment) should be(Number(2))
+  }
+
+  "A abs" should "return the magnitude of its argument. " in {
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(abs 1 6)", env)
+    an[UnexpectedType] should be thrownBy eval("(abs 'a)", env)
+
+    eval("(abs 1)", env) should be(Number(1))
+    eval("(abs -1)", env) should be(Number(1))
+    eval("(abs 42)", env) should be(Number(42))
+    eval("(abs -42)", env) should be(Number(42))
+  }
+
+  "A quotient" should "return corect result" in {
+
+    val env = new TopEnvironment()
+
     an[UnexpectedNumberOfArguments] should be thrownBy eval("(quotient)", env)
     an[UnexpectedNumberOfArguments] should be thrownBy eval("(quotient 1 6 5)", env)
     an[UnexpectedType] should be thrownBy eval("(quotient 'a 5)", env)
-    
+
     eval("(quotient 13 4)", env) should be(Number(3))
     eval("(quotient 3 4)", env) should be(Number(0))
     eval("(quotient 19 8)", env) should be(Number(2))
@@ -191,34 +276,33 @@ class NumberSpec extends UnitSpec {
     eval("(quotient -13 4)", env) should be(Number(-3))
     eval("(quotient 13 -4)", env) should be(Number(-3))
   }
-  
+
   "A modulo" should "return corect result" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo)", env)
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo 1 6 5)", env)
-	  an[UnexpectedType] should be thrownBy eval("(modulo 'a 5)", env)
-	  
-	  eval("(modulo 13 4)", env) should be(Number(1))
-	  eval("(modulo -13 4)", env) should be(Number(3))
-	  eval("(modulo 13 -4)", env) should be(Number(-3))
-	  eval("(modulo -13 -4)", env) should be(Number(-1))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(modulo 1 6 5)", env)
+    an[UnexpectedType] should be thrownBy eval("(modulo 'a 5)", env)
+
+    eval("(modulo 13 4)", env) should be(Number(1))
+    eval("(modulo -13 4)", env) should be(Number(3))
+    eval("(modulo 13 -4)", env) should be(Number(-3))
+    eval("(modulo -13 -4)", env) should be(Number(-1))
   }
-  
+
   "A remainder" should "return corect result" in {
-	  
-	  val env = new TopEnvironment()
-	  
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder)", env)
-	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder 1 6 5)", env)
-	  an[UnexpectedType] should be thrownBy eval("(remainder 'a 5)", env)
-	  
-	  eval("(remainder 13 4)", env) should be(Number(1))
-	  eval("(remainder -13 4)", env) should be(Number(-1))
-	  eval("(remainder 13 -4)", env) should be(Number(1))
-	  eval("(remainder -13 -4)", env) should be(Number(-1))
+
+    val env = new TopEnvironment()
+
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder)", env)
+    an[UnexpectedNumberOfArguments] should be thrownBy eval("(remainder 1 6 5)", env)
+    an[UnexpectedType] should be thrownBy eval("(remainder 'a 5)", env)
+
+    eval("(remainder 13 4)", env) should be(Number(1))
+    eval("(remainder -13 4)", env) should be(Number(-1))
+    eval("(remainder 13 -4)", env) should be(Number(1))
+    eval("(remainder -13 -4)", env) should be(Number(-1))
   }
-  
-  
+
 }
