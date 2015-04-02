@@ -1,7 +1,6 @@
 package cz.cvut.fit.cerveada.schela
 
 
-
 trait Form  {
   def evaluate(environment: Environment) = this
   def typeName(): String
@@ -20,14 +19,19 @@ abstract class Procedure() extends Form {
   def typeName = "procedure"
 }
 
-case class SProcedure(paramNames: List[String], body: Form, homeEnvironment: Environment) extends Procedure {
+case class SProcedure(paramNames: List[String], body:List[Form], homeEnvironment: Environment) extends Procedure {
   def call(params: List[Form]) = {
     if (paramNames.size != params.size)
       throw new UnexpectedNumberOfArguments(params.size, paramNames.size)
 
     val localEnvironment = new LocalEnvironment(homeEnvironment)
     paramNames.zip(params).foreach { case (n, v) => localEnvironment.define(n, v) }
-    Evaluator.eval(body, localEnvironment);
+    
+    val revBody = body.reverse 
+    val head = revBody.head 
+    val tail = revBody.tail
+    tail.foreach(Evaluator.eval(_, localEnvironment))
+    Evaluator.eval(head, localEnvironment)
   }
 }
 

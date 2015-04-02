@@ -1,4 +1,16 @@
-package cz.cvut.fit.cerveada.schela
+package cz.cvut.fit.cerveada.schela.natives
+
+import cz.cvut.fit.cerveada.schela.Bool
+import cz.cvut.fit.cerveada.schela.Number
+import cz.cvut.fit.cerveada.schela.SString
+import cz.cvut.fit.cerveada.schela.Form
+import cz.cvut.fit.cerveada.schela.UnexpectedNumberOfArguments
+import cz.cvut.fit.cerveada.schela.UnexpectedType
+import cz.cvut.fit.cerveada.schela.TopEnvironment
+import cz.cvut.fit.cerveada.schela.UnexpectedNumberOfArguments
+import cz.cvut.fit.cerveada.schela.UnexpectedType
+import cz.cvut.fit.cerveada.schela.UnitSpec
+import cz.cvut.fit.cerveada.schela.LispException
 
 class NumberSpec extends UnitSpec {
 

@@ -14,8 +14,10 @@ object Evaluator {
   def evalList(l:List[Form], env:Environment) = l match {
     case Symbol("define") :: rest => define(rest, env)
     case Symbol("set!") :: rest => set(rest, env)
-    case Symbol("lambda") :: SList(params) :: expr :: Nil => lambda(params, expr, env)      
+    case Symbol("lambda") :: SList(params) :: exprList => lambda(params, exprList, env)      
     case Symbol("if") :: rest => ifElse(rest, env)
+    case Symbol("and") :: rest => evalAnd(rest, env)
+    case Symbol("or") :: rest => evalOr(rest, env)
     case a :: rest => evalApplication(a, rest, env) 
   }
 
@@ -32,7 +34,7 @@ object Evaluator {
   def define(l: List[Form], env: Environment) = {
     l match {
       case Symbol(name) :: expr :: Nil => env.define(name, eval(expr, env))
-      case SList(Symbol(name) :: params) :: expr :: Nil => env.define(name, lambda(params, expr, env))
+      case SList(Symbol(name) :: params) :: expr => env.define(name, lambda(params, expr, env))
       case _                           => throw new LispException("parsing exception")
     }
     Unspecified()
@@ -46,7 +48,7 @@ object Evaluator {
     Unspecified()
   }
 
-  def lambda(params: List[Form], body:Form, env: Environment) = {
+  def lambda(params: List[Form], body:List[Form], env: Environment) = {
     val paramNames = params.map { x =>
       x match {
         case Symbol(x) => x
@@ -72,5 +74,25 @@ object Evaluator {
   def evaluateElse(elseExp: Option[Form], environment: Environment) = elseExp match {
     case Some(e) => eval(e,environment)
     case None    => Unspecified()
+  }
+
+  def evalAnd(l: List[Form], env: Environment): Form = {
+    if (l.isEmpty) return Bool(true)
+
+    eval(l.head, env) match {
+      case Bool(true)  => evalAnd(l.tail, env);
+      case Bool(false) => Bool(false);
+      case t           => throw new UnexpectedType(Bool(true), t);
+    }
+  }
+
+  def evalOr(l: List[Form], env: Environment): Form = {
+    if (l.isEmpty) return Bool(false)
+
+    eval(l.head, env) match {
+      case Bool(false)  => evalOr(l.tail, env);
+      case Bool(true) => Bool(true);
+      case t           => throw new UnexpectedType(Bool(true), t);
+    }
   }
 }
