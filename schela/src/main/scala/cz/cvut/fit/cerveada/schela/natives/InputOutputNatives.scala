@@ -11,12 +11,9 @@ object InputOutputNatives {
   type procedureType = List[Form] => Form
   val natives = scala.collection.mutable.Map[String, procedureType]();
 
-  natives("display") = (params: List[Form]) => {
-    params match {
-      case SString(v) :: Nil => print(v)
-      case _                 => throw new UnexpectedNumberOfArguments(params.size, 1)
-    }
-    Unspecified()
+  natives("display") = {
+      case SString(v) :: Nil => print(v); Unspecified()
+      case x                 => throw new UnexpectedNumberOfArguments(x.size, 1)
   }
 
 }
