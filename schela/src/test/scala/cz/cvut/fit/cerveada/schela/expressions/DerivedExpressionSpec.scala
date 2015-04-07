@@ -91,6 +91,8 @@ class DerivedExpressionSpec extends UnitSpec{
             (z (+ x y)))
         (* z x)))
     """, env) should be(Number(35))
+    
+    eval("(let ((x 5)) (set! x (+ x 2)) x)", env) should be(Number(7))
   }
   
   "A let* " should "work corecty" in {
@@ -107,5 +109,36 @@ class DerivedExpressionSpec extends UnitSpec{
              (z (+ x y)))
         (* z x)))
 	  """, env) should be(Number(70))
+  }
+  
+  "A letrec " should "work corecty" in {
+	  
+	  val env = new TopEnvironment();
+	  
+	  eval("""    
+    (letrec ((even?
+              (lambda (n)
+                (if (zero? n)
+                    #t
+                    (odd? (- n 1)))))
+             (odd?
+              (lambda (n)
+                (if (zero? n)
+                    #f
+                    (even? (- n 1))))))
+      (even? 88))
+		""", env) should be(Bool(true))
+  }
+  
+  "A begin " should "evaluate expressions sequentially from left to right," +
+  "and the value of the last expression is returned" in {
+	  
+	  val env = new TopEnvironment();
+    
+	  eval("(define x 0)", env)
+	  eval("""    
+    (begin (set! x 5)
+       (+ x 1)) 
+	  """, env) should be(Number(6))
   }
 }

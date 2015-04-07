@@ -14,19 +14,22 @@ object Evaluator {
     case Symbol(n) => environment.get(n)
     case SList(l) => evalList(l, environment)
   }
-  
-  def evalList(l:List[Form], env:Environment) = l match {
+
+  def evalList(l: List[Form], env: Environment) = l match {
     case Symbol("define") :: rest => define(rest, env)
     //Primitive expression types
     case Symbol("set!") :: rest => set(rest, env)
-    case Symbol("lambda") :: SList(params) :: exprList => lambda(params, exprList, env)      
+    case Symbol("lambda") :: SList(params) :: exprList => lambda(params, exprList, env)
     case Symbol("if") :: rest => ifElse(rest, env)
     //Derived expression types 
     case Symbol("and") :: rest => evalAnd(rest, env)
     case Symbol("or") :: rest => evalOr(rest, env)
-    case Symbol("or") :: rest => evalOr(rest, env)
     case Symbol("let") :: rest => evalLet(rest, env)
-    case a :: rest => evalApplication(a, rest, env) 
+    case Symbol("let*") :: rest => evalLetStar(rest, env)
+    case Symbol("letrec") :: rest => evalLetStar(rest, env)
+    case Symbol("begin") :: rest => evalBegin(rest, env)
+    case a :: rest => evalApplication(a, rest, env)
+    case _ => throw new SyntaxException("expression")
   }
 
   def evalApplication(fun: Form, params: List[Form], env: Environment): Form = {
@@ -60,9 +63,10 @@ object Evaluator {
     val paramNames = params.map { x =>
       x match {
         case Symbol(x) => x
-        case _         => throw new LispException("parsing exception")
+        case _         => throw new SyntaxException("lambda")
       }
     }
+    if (body.isEmpty) throw new SyntaxException("lambda")
     SProcedure(paramNames, body, env)
   }
 
@@ -114,11 +118,33 @@ object Evaluator {
 
     bindings.foreach { binding =>
       binding match {
-        case SList(List(Symbol(n), body: Form /*body @ _**/ )) => newEnvironment.define(n, eval(body, env))
+        case SList(List(Symbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, env))
         case _ => throw new SyntaxException("let")
       }
     }
     
     evalAll(body, newEnvironment)
+  }
+
+  def evalLetStar(l: List[Form], env: Environment): Form = {
+    val (bindings, body) = l match {
+      case SList(bindings) :: rest if !rest.isEmpty => (bindings, rest)
+      case _                                        => throw new SyntaxException("let")
+    }
+
+    val newEnvironment = new LocalEnvironment(env)
+
+    bindings.foreach { binding =>
+      binding match {
+        case SList(List(Symbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, newEnvironment))
+        case _                                  => throw new SyntaxException("let")
+      }
+    }
+
+    evalAll(body, newEnvironment)
+  }
+
+  def evalBegin(body: List[Form], env: Environment): Form = {
+    evalAll(body, env);
   }
 }

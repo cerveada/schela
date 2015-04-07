@@ -27,11 +27,7 @@ case class SProcedure(paramNames: List[String], body:List[Form], homeEnvironment
     val localEnvironment = new LocalEnvironment(homeEnvironment)
     paramNames.zip(params).foreach { case (n, v) => localEnvironment.define(n, v) }
     
-    val revBody = body.reverse 
-    val head = revBody.head 
-    val tail = revBody.tail
-    tail.foreach(Evaluator.eval(_, localEnvironment))
-    Evaluator.eval(head, localEnvironment)
+    Evaluator.evalAll(body, localEnvironment)
   }
 }
 
