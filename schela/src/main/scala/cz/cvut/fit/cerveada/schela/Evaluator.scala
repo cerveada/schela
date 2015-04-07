@@ -1,6 +1,10 @@
 package cz.cvut.fit.cerveada.schela
 
 object Evaluator {
+
+  def evalAll(code: List[Form], environment: Environment) = {
+    code.foldLeft(code.head)((_, c) => eval(c, environment))
+  }
   
   def eval(code:Form, environment:Environment):Form = code match {
     case b:Bool => b
@@ -13,11 +17,15 @@ object Evaluator {
   
   def evalList(l:List[Form], env:Environment) = l match {
     case Symbol("define") :: rest => define(rest, env)
+    //Primitive expression types
     case Symbol("set!") :: rest => set(rest, env)
     case Symbol("lambda") :: SList(params) :: exprList => lambda(params, exprList, env)      
     case Symbol("if") :: rest => ifElse(rest, env)
+    //Derived expression types 
     case Symbol("and") :: rest => evalAnd(rest, env)
     case Symbol("or") :: rest => evalOr(rest, env)
+    case Symbol("or") :: rest => evalOr(rest, env)
+    case Symbol("let") :: rest => evalLet(rest, env)
     case a :: rest => evalApplication(a, rest, env) 
   }
 
@@ -94,5 +102,23 @@ object Evaluator {
       case Bool(true) => Bool(true);
       case t           => throw new UnexpectedType(Bool(true), t);
     }
+  }
+  
+  def evalLet(l: List[Form], env: Environment): Form = {
+    val (bindings, body) = l match {
+      case SList(bindings) :: rest if !rest.isEmpty => (bindings, rest)
+      case _                                        => throw new SyntaxException("let")
+    }
+    
+    val newEnvironment = new LocalEnvironment(env)
+
+    bindings.foreach { binding =>
+      binding match {
+        case SList(List(Symbol(n), body: Form /*body @ _**/ )) => newEnvironment.define(n, eval(body, env))
+        case _ => throw new SyntaxException("let")
+      }
+    }
+    
+    evalAll(body, newEnvironment)
   }
 }

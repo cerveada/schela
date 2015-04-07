@@ -15,3 +15,7 @@ extends LispException(s"$name is not bound")
 
 class VariableAlreadyDefined(name:String)
 extends LispException(s"$name is already defined")
+
+class SyntaxException(syntaxName:String)
+extends LispException(s"wrong $syntaxName syntax")
+
