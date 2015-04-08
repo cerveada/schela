@@ -5,6 +5,7 @@ import cz.cvut.fit.cerveada.schela.natives.NumberNatives
 import cz.cvut.fit.cerveada.schela.natives.SymbolNatives
 import cz.cvut.fit.cerveada.schela.natives.EquivalenceNatives
 import cz.cvut.fit.cerveada.schela.natives.InputOutputNatives
+import cz.cvut.fit.cerveada.schela.natives.ListNatives
 
 abstract class Environment {
 	protected val variables = scala.collection.mutable.Map[String, Form]();
@@ -58,5 +59,6 @@ class TopEnvironment extends Environment {
   variables ++= SymbolNatives.natives.mapValues(NativeProcedure(_))
   variables ++= EquivalenceNatives.natives.mapValues(NativeProcedure(_))
   variables ++= InputOutputNatives.natives.mapValues(NativeProcedure(_))
+  variables ++= ListNatives.natives.mapValues(NativeProcedure(_))
   
 }
