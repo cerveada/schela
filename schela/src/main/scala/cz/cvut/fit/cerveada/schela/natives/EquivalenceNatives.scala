@@ -18,24 +18,11 @@ object EquivalenceNatives {
     } 
   }
 
-  natives("eql?") = (params: List[Form]) => {
+  natives("eqv?") = eqv
+  def eqv(params: List[Form]) = {
     params match {
       case l :: r :: Nil => Bool(l == r)
       case _             => throw new UnexpectedNumberOfArguments(params.size, 2)
     }
   }
-
-case class Display() extends Procedure {
-
-  def call(params: List[Form]) = {
-    params match {
-      case SString(v) :: Nil => print(v) 
-      case _                 => throw new UnexpectedNumberOfArguments(params.size, 1)
-    }
-    Unspecified()
-  }
-}
-
-
-
 }

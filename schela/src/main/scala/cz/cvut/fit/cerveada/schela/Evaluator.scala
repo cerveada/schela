@@ -1,5 +1,7 @@
 package cz.cvut.fit.cerveada.schela
 
+import cz.cvut.fit.cerveada.schela.natives.EquivalenceNatives.eqv
+
 object Evaluator {
 
   def evalAll(code: List[Form], environment: Environment) = {
@@ -28,6 +30,8 @@ object Evaluator {
     case Symbol("let*") :: rest => evalLetStar(rest, env)
     case Symbol("letrec") :: rest => evalLetStar(rest, env)
     case Symbol("begin") :: rest => evalBegin(rest, env)
+    case Symbol("cond") :: rest => evalCond(rest, env)
+    case Symbol("case") :: rest => evalCase(rest, env)
     case a :: rest => evalApplication(a, rest, env)
     case _ => throw new SyntaxException("expression")
   }
@@ -147,4 +151,40 @@ object Evaluator {
   def evalBegin(body: List[Form], env: Environment): Form = {
     evalAll(body, env);
   }
+
+  def evalCond(body: List[Form], env: Environment): Form = body match {
+    case Nil => Unspecified()
+    case SList(Symbol("else") :: rest) :: Nil => evalAll(rest, env)
+    case SList(test :: rest) :: _ if evalsToTrue(test, env) => evalAll(rest, env)
+    case SList(_) :: tail => evalCond(tail, env)
+    case _ => throw new SyntaxException("cond")
+  }
+
+  def evalCase(body: List[Form], env: Environment): Form = {
+    val (key, rest) = body match {
+      case (expr:Form) :: rest => (eval(expr, env), rest)
+      case _ => throw new SyntaxException("case")
+    }
+
+    rest.foreach {
+      case SList(SList(l) :: clauseRest) if containsKey(l, key) => return evalAll(clauseRest, env)
+      case SList(SList(_) :: _) => Nil
+      case SList(Symbol("else") :: clauseRest) => return evalAll(clauseRest, env)
+      case _ => throw new SyntaxException("case")
+    }
+        
+    Unspecified()
+  }
+
+  def containsKey(list:List[Form], key:Form):Boolean = {
+    list.exists { x => eqv(x :: key :: Nil).b }
+  }
+  
+  def evalsToTrue(expr: Form, env: Environment): Boolean = {
+    eval(expr, env) match {
+      case Bool(b) => b
+      case _       => throw new LispException("predicate must return boolean")
+    }
+  }
+
 }

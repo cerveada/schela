@@ -39,4 +39,11 @@ class ParserSpec extends UnitSpec {
     eval("'abCdEFgh", env) should be(Symbol("abcdefgh"))
   }
   
+    "A Parser" should "parse vector" in {
+    
+    val env = new TopEnvironment;
+    
+    eval("'#(1 2 3)", env) should be(Vector(Number(1) :: Number(2) :: Number(3) :: Nil))
+  }
+  
 }

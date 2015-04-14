@@ -4,9 +4,11 @@ import cz.cvut.fit.cerveada.schela.Bool
 import cz.cvut.fit.cerveada.schela.Number
 import cz.cvut.fit.cerveada.schela.Unspecified
 import cz.cvut.fit.cerveada.schela.SList
+import cz.cvut.fit.cerveada.schela.Symbol
 import cz.cvut.fit.cerveada.schela.Form
 import cz.cvut.fit.cerveada.schela.UnitSpec
 import cz.cvut.fit.cerveada.schela.TopEnvironment
+import cz.cvut.fit.cerveada.schela.Unspecified
 
 class DerivedExpressionSpec extends UnitSpec{
 
@@ -140,5 +142,45 @@ class DerivedExpressionSpec extends UnitSpec{
     (begin (set! x 5)
        (+ x 1)) 
 	  """, env) should be(Number(6))
+  }
+
+  "A cond" should "work coreclty" in {
+
+    val env = new TopEnvironment();
+
+    eval("""    
+    (cond ((> 3 2) 'greater)
+          ((< 3 2) 'less))) 
+    """, env) should be(Symbol("greater"))
+
+    eval("""    
+    (cond ((> 3 3) 'greater)
+          ((< 3 3) 'less)
+          (else 'equal)) 
+    """, env) should be(Symbol("equal"))
+  }
+  
+  "A case" should "work coreclty" in {
+	  
+	  val env = new TopEnvironment();
+    
+	  eval("""    
+    (case (* 2 3)
+      ((2 3 5 7) 'prime)
+      ((1 4 6 8 9) 'composite))
+		""", env) should be(Symbol("composite"))
+    
+		eval("""    
+    (case (car '(c d))
+      ((a) 'a)
+      ((b) 'b))
+		""", env) should be(Unspecified())
+		
+		eval("""    
+    (case (car '(c d))
+      ((a e i o u) 'vowel)
+      ((w y) 'semivowel)
+      (else 'consonant))
+		""", env) should be(Symbol("consonant"))
   }
 }
