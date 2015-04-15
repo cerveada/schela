@@ -19,3 +19,6 @@ extends LispException(s"$name is already defined")
 class SyntaxException(syntaxName:String)
 extends LispException(s"wrong $syntaxName syntax")
 
+class ImmutableModification(name:String)
+extends LispException(s"attempt to modify immutable $name")
+

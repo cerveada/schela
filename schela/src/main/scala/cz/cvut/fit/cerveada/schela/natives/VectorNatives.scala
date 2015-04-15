@@ -7,6 +7,7 @@ import cz.cvut.fit.cerveada.schela.Procedure
 import cz.cvut.fit.cerveada.schela.SString
 import cz.cvut.fit.cerveada.schela.UnexpectedNumberOfArguments
 import cz.cvut.fit.cerveada.schela.UnexpectedType
+import cz.cvut.fit.cerveada.schela.ImmutableModification
 import scala.collection.mutable.ArraySeq
 
 
@@ -24,7 +25,7 @@ object VectorNatives {
 
   natives("vector-length") = (params: List[Form]) => params match {
     case SVector(a) :: Nil => Number(a.length)
-    //case t :: Nil          => throw new UnexpectedType(t, SVector(ArraySeq()))
+    case t :: Nil          => throw new UnexpectedType(t, SVector(ArraySeq()))
     case _                 => throw new UnexpectedNumberOfArguments(params.size, 1)
   }
   
@@ -36,6 +37,26 @@ object VectorNatives {
     case t :: Nil                      => throw new UnexpectedType(t, Number(0))
     case t :: _ :: Nil                 => throw new UnexpectedType(t, Number(0))
     case _                             => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+  
+  natives("is-mutable?") = (params: List[Form]) => params match {
+      case (v:SVector) :: Nil  => Bool(v.mutable)
+      case t :: Nil            => throw new UnexpectedType(t, SVector(ArraySeq()))
+      case _                   => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+  
+  natives("vector-ref") = (params: List[Form]) => params match {
+    case SVector(a) :: Number(n) :: Nil => a(n)
+    case t :: Number(_) :: Nil          => throw new UnexpectedType(t, Number(0))
+    case SVector(_) :: t :: Nil         => throw new UnexpectedType(t, SVector(ArraySeq()))
+    case _                              => throw new UnexpectedNumberOfArguments(params.size, 1)
+  }
+  
+  natives("vector-set!") = (params: List[Form]) => params match {
+    case (v:SVector) :: _ if !v.mutable => throw new ImmutableModification("vector")
+    case SVector(a) :: Number(n) :: (f: Form) :: Nil => a(n) = f; Unspecified()
+    case t :: _ :: _ :: Nil => throw new UnexpectedType(t, SVector(ArraySeq()))
+    case _ => throw new UnexpectedNumberOfArguments(params.size, 1)
   }
 
  

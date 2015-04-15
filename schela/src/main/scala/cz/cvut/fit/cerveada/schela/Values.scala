@@ -67,9 +67,21 @@ object SList {
 }
 
 case class SVector(l:ArraySeq[Form]) extends Form {
-  def typeName = "vector"
+  def typeName = "vector"  
   override def toString = {
     val strings = l.map { _.toString }
     "Vector(" + strings.mkString(", ") + ")"
   }
+  
+  var isMutable =  true;
+  def mutable = isMutable;
 }
+
+object SVector {
+  def constant(l: ArraySeq[Form]) = {
+    val instance = apply(l)
+    instance.isMutable = false
+    instance
+  }
+}
+

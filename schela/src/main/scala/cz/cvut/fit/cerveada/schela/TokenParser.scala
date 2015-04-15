@@ -33,7 +33,7 @@ object TokenParser extends JavaTokenParsers  {
   def quoteChar:Parser[Form] = "'" ~> code ^^ (s => Quote(s)) 
   def quoteWord:Parser[Form] = "(" ~> "quote" ~> code <~ ")" ^^ (s => Quote(s)) 
   
-  def vector = "#(" ~> vectorContent <~ ")" ^^ {case v => SVector(v)}
+  def vector = "#(" ~> vectorContent <~ ")" ^^ {case v => (SVector.constant(v))}
   def vectorContent:Parser[ArraySeq[Form]] = rep(code)  ^^ (ArraySeq() ++ _)
 
 }
