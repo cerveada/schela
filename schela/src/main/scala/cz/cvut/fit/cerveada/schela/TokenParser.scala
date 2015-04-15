@@ -17,7 +17,7 @@ object TokenParser extends JavaTokenParsers  {
   //private def string = /*"\"" ~>*/ stringLiteral/* <~ "\""*/ ^^ { case s => SString(s) }
   def string = "\"" ~> """([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*""".r <~ "\"" ^^ 
     { case s => SString(s) }
-  def symbol = identifier ^^ {case v => Symbol(v.toLowerCase())}
+  def symbol = identifier ^^ {case v => SSymbol(Symbol(v.toLowerCase()))}
   def identifier:Parser[String] = (identInitial | "+" | "-")
   def identInitial = """[A-Za-z!$%&*/:<=>?~_^][A-Za-z!$%&*/:<=>?~_^0-9.+-]*""".r
   

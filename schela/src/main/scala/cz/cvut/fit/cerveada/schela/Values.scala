@@ -19,7 +19,7 @@ abstract class Procedure() extends Form {
   def typeName = "procedure"
 }
 
-case class SProcedure(paramNames: List[String], body:List[Form], homeEnvironment: Environment) extends Procedure {
+case class SProcedure(paramNames: List[Symbol], body:List[Form], homeEnvironment: Environment) extends Procedure {
   def call(params: List[Form]) = {
     if (paramNames.size != params.size)
       throw new UnexpectedNumberOfArguments(params.size, paramNames.size)
@@ -48,7 +48,7 @@ case class Quote(form:Form) extends Form {
 
 }
 
-case class Symbol(name:String) extends Form {
+case class SSymbol(name:Symbol) extends Form {
     def typeName = "symvbol"
 }
 

@@ -13,25 +13,25 @@ object Evaluator {
     case b:Number => b
     case b:SString => b    
     case Quote(c) => c
-    case Symbol(n) => environment.get(n)
+    case SSymbol(n) => environment.get(n)
     case SList(l) => evalList(l, environment)
   }
 
   def evalList(l: List[Form], env: Environment) = l match {
-    case Symbol("define") :: rest => define(rest, env)
+    case SSymbol('define) :: rest => define(rest, env)
     //Primitive expression types
-    case Symbol("set!") :: rest => set(rest, env)
-    case Symbol("lambda") :: SList(params) :: exprList => lambda(params, exprList, env)
-    case Symbol("if") :: rest => ifElse(rest, env)
+    case SSymbol(Symbol("set!")) :: rest => set(rest, env)
+    case SSymbol('lambda) :: SList(params) :: exprList => lambda(params, exprList, env)
+    case SSymbol('if) :: rest => ifElse(rest, env)
     //Derived expression types 
-    case Symbol("and") :: rest => evalAnd(rest, env)
-    case Symbol("or") :: rest => evalOr(rest, env)
-    case Symbol("let") :: rest => evalLet(rest, env)
-    case Symbol("let*") :: rest => evalLetStar(rest, env)
-    case Symbol("letrec") :: rest => evalLetStar(rest, env)
-    case Symbol("begin") :: rest => evalBegin(rest, env)
-    case Symbol("cond") :: rest => evalCond(rest, env)
-    case Symbol("case") :: rest => evalCase(rest, env)
+    case SSymbol('and) :: rest => evalAnd(rest, env)
+    case SSymbol('or) :: rest => evalOr(rest, env)
+    case SSymbol('let) :: rest => evalLet(rest, env)
+    case SSymbol(Symbol("let*")) :: rest => evalLetStar(rest, env)
+    case SSymbol('letrec) :: rest => evalLetStar(rest, env)
+    case SSymbol('begin) :: rest => evalBegin(rest, env)
+    case SSymbol('cond) :: rest => evalCond(rest, env)
+    case SSymbol('case) :: rest => evalCase(rest, env)
     case a :: rest => evalApplication(a, rest, env)
     case _ => throw new SyntaxException("expression")
   }
@@ -48,8 +48,8 @@ object Evaluator {
 
   def define(l: List[Form], env: Environment) = {
     l match {
-      case Symbol(name) :: expr :: Nil => env.define(name, eval(expr, env))
-      case SList(Symbol(name) :: params) :: expr => env.define(name, lambda(params, expr, env))
+      case SSymbol(name) :: expr :: Nil => env.define(name, eval(expr, env))
+      case SList(SSymbol(name) :: params) :: expr => env.define(name, lambda(params, expr, env))
       case _                           => throw new LispException("parsing exception")
     }
     Unspecified()
@@ -57,7 +57,7 @@ object Evaluator {
 
   def set(l: List[Form], env: Environment) = {
     l match {
-      case Symbol(name) :: expr :: Nil => env.set(name, eval(expr, env))
+      case SSymbol(name) :: expr :: Nil => env.set(name, eval(expr, env))
       case _                           => throw new LispException("parsing exception")
     }
     Unspecified()
@@ -66,7 +66,7 @@ object Evaluator {
   def lambda(params: List[Form], body:List[Form], env: Environment) = {
     val paramNames = params.map { x =>
       x match {
-        case Symbol(x) => x
+        case SSymbol(x) => x
         case _         => throw new SyntaxException("lambda")
       }
     }
@@ -122,7 +122,7 @@ object Evaluator {
 
     bindings.foreach { binding =>
       binding match {
-        case SList(List(Symbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, env))
+        case SList(List(SSymbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, env))
         case _ => throw new SyntaxException("let")
       }
     }
@@ -140,7 +140,7 @@ object Evaluator {
 
     bindings.foreach { binding =>
       binding match {
-        case SList(List(Symbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, newEnvironment))
+        case SList(List(SSymbol(n), expr: Form)) => newEnvironment.define(n, eval(expr, newEnvironment))
         case _                                  => throw new SyntaxException("let")
       }
     }
@@ -154,7 +154,7 @@ object Evaluator {
 
   def evalCond(body: List[Form], env: Environment): Form = body match {
     case Nil => Unspecified()
-    case SList(Symbol("else") :: rest) :: Nil => evalAll(rest, env)
+    case SList(SSymbol('else) :: rest) :: Nil => evalAll(rest, env)
     case SList(test :: rest) :: _ if evalsToTrue(test, env) => evalAll(rest, env)
     case SList(_) :: tail => evalCond(tail, env)
     case _ => throw new SyntaxException("cond")
@@ -169,7 +169,7 @@ object Evaluator {
     rest.foreach {
       case SList(SList(l) :: clauseRest) if containsKey(l, key) => return evalAll(clauseRest, env)
       case SList(SList(_) :: _) => Nil
-      case SList(Symbol("else") :: clauseRest) => return evalAll(clauseRest, env)
+      case SList(SSymbol('else) :: clauseRest) => return evalAll(clauseRest, env)
       case _ => throw new SyntaxException("case")
     }
         

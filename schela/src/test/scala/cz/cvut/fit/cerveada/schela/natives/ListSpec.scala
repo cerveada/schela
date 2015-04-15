@@ -4,7 +4,7 @@ import cz.cvut.fit.cerveada.schela.Bool
 import cz.cvut.fit.cerveada.schela.Form
 import cz.cvut.fit.cerveada.schela.SString
 import cz.cvut.fit.cerveada.schela.SList
-import cz.cvut.fit.cerveada.schela.Symbol
+import cz.cvut.fit.cerveada.schela.SSymbol
 import cz.cvut.fit.cerveada.schela.Number
 import cz.cvut.fit.cerveada.schela.TopEnvironment
 import cz.cvut.fit.cerveada.schela.UnexpectedNumberOfArguments
@@ -23,8 +23,8 @@ class LisSpec extends UnitSpec {
     an[UnexpectedType] should be thrownBy eval("(car 42)", env)
     an[UnexpectedNumberOfArguments] should be thrownBy eval("(car '(5 2) '(4 5))", env)
     
-    eval("(car '(a b c))", env) should be(Symbol("a"))
-    eval("(car '((a) b c d)) ", env) should be(SList(Symbol("a") :: Nil))
+    eval("(car '(a b c))", env) should be(SSymbol('a))
+    eval("(car '((a) b c d)) ", env) should be(SList(SSymbol('a) :: Nil))
     // TODO
     //eval("(car '(1 . 2))", env) should be(Number(1))
     eval("(car '(3 4 5))", env) should be(Number(3))
@@ -39,8 +39,8 @@ class LisSpec extends UnitSpec {
 	  an[UnexpectedType] should be thrownBy eval("(cdr 42)", env)
 	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(cdr '(5 2) '(4 5))", env)
 	  
-	  eval("(cdr '(a b))", env) should be(SList(Symbol("b") :: Nil))
-	  eval("(cdr '((a) b c d)) ", env) should be(SList(Symbol("b") :: Symbol("c") :: Symbol("d") :: Nil))
+	  eval("(cdr '(a b))", env) should be(SList(SSymbol('b) :: Nil))
+	  eval("(cdr '((a) b c d)) ", env) should be(SList(SSymbol('b) :: SSymbol('c) :: SSymbol('d) :: Nil))
 	  // TODO
 	  //eval("(cdr '(1 . 2))", env) should be(Number(2))
 	  eval("(cdr '(3 4))", env) should be(SList(Number(4) :: Nil))

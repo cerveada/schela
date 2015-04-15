@@ -11,9 +11,9 @@ class ParserSpec extends UnitSpec {
   "A Parser" should "parse expresion with adding and multiplication" in {
     
     val result = TokenParser.parseItem("(+ (* 4 5) (+ 42 6))")
-    result.get should be(SList(Symbol("+") :: 
-      SList(Symbol("*") :: Number(4) :: Number(5) :: Nil) ::
-      SList(Symbol("+") :: Number(42) :: Number(6) :: Nil) :: 
+    result.get should be(SList(SSymbol('+) :: 
+      SList(SSymbol('*) :: Number(4) :: Number(5) :: Nil) ::
+      SList(SSymbol('+) :: Number(42) :: Number(6) :: Nil) :: 
     Nil))
   }
   
@@ -36,7 +36,7 @@ class ParserSpec extends UnitSpec {
     eval("(define (foOBaR x) (+ x 42))", env)
     eval("(foOBaR 4)", env) should be(Number(46))
     
-    eval("'abCdEFgh", env) should be(Symbol("abcdefgh"))
+    eval("'abCdEFgh", env) should be(SSymbol('abcdefgh))
   }
   
     "A Parser" should "parse vector" in {

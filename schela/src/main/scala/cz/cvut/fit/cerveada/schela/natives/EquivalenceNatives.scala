@@ -12,10 +12,16 @@ object EquivalenceNatives {
   val natives = scala.collection.mutable.Map[String, procedureType]();
   
   natives("eq?") = (params: List[Form]) => {
-    params match {
-      case l :: r :: Nil => Bool(l eq r)
+    val pair = params match {
+      case l :: r :: Nil => (l,r)
       case _             => throw new UnexpectedNumberOfArguments(params.size, 2)
-    } 
+    }
+    
+    pair match {
+      case(SSymbol(l), SSymbol(r)) => Bool(l eq r)
+      case(SList(Nil), SList(Nil)) => Bool(true)
+      case(l,r) => Bool(l eq r)
+    }
   }
 
   natives("eqv?") = eqv

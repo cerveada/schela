@@ -4,7 +4,7 @@ import cz.cvut.fit.cerveada.schela.Bool
 import cz.cvut.fit.cerveada.schela.Number
 import cz.cvut.fit.cerveada.schela.Unspecified
 import cz.cvut.fit.cerveada.schela.SList
-import cz.cvut.fit.cerveada.schela.Symbol
+import cz.cvut.fit.cerveada.schela.SSymbol
 import cz.cvut.fit.cerveada.schela.Form
 import cz.cvut.fit.cerveada.schela.UnitSpec
 import cz.cvut.fit.cerveada.schela.TopEnvironment
@@ -151,13 +151,13 @@ class DerivedExpressionSpec extends UnitSpec{
     eval("""    
     (cond ((> 3 2) 'greater)
           ((< 3 2) 'less))) 
-    """, env) should be(Symbol("greater"))
+    """, env) should be(SSymbol('greater))
 
     eval("""    
     (cond ((> 3 3) 'greater)
           ((< 3 3) 'less)
           (else 'equal)) 
-    """, env) should be(Symbol("equal"))
+    """, env) should be(SSymbol('equal))
   }
   
   "A case" should "work coreclty" in {
@@ -168,7 +168,7 @@ class DerivedExpressionSpec extends UnitSpec{
     (case (* 2 3)
       ((2 3 5 7) 'prime)
       ((1 4 6 8 9) 'composite))
-		""", env) should be(Symbol("composite"))
+		""", env) should be(SSymbol('composite))
     
 		eval("""    
     (case (car '(c d))
@@ -181,6 +181,6 @@ class DerivedExpressionSpec extends UnitSpec{
       ((a e i o u) 'vowel)
       ((w y) 'semivowel)
       (else 'consonant))
-		""", env) should be(Symbol("consonant"))
+		""", env) should be(SSymbol('consonant))
   }
 }
