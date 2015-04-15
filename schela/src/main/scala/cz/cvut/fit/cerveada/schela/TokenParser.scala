@@ -2,6 +2,9 @@ package cz.cvut.fit.cerveada.schela
 
 import scala.util.parsing.combinator._
 import scala.util.matching.Regex
+import scala.collection.mutable.ArraySeq
+import scala.collection.mutable.ArrayBuffer
+
 
 object TokenParser extends JavaTokenParsers  {
   override def skipWhitespace = true
@@ -30,5 +33,7 @@ object TokenParser extends JavaTokenParsers  {
   def quoteChar:Parser[Form] = "'" ~> code ^^ (s => Quote(s)) 
   def quoteWord:Parser[Form] = "(" ~> "quote" ~> code <~ ")" ^^ (s => Quote(s)) 
   
-  def vector = "#(" ~> listContent <~ ")" ^^ {case v => Vector(v)}
+  def vector = "#(" ~> vectorContent <~ ")" ^^ {case v => SVector(v)}
+  def vectorContent:Parser[ArraySeq[Form]] = rep(code)  ^^ (ArraySeq() ++ _)
+
 }

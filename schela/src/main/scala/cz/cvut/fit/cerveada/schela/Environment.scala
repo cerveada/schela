@@ -6,6 +6,7 @@ import cz.cvut.fit.cerveada.schela.natives.SymbolNatives
 import cz.cvut.fit.cerveada.schela.natives.EquivalenceNatives
 import cz.cvut.fit.cerveada.schela.natives.InputOutputNatives
 import cz.cvut.fit.cerveada.schela.natives.ListNatives
+import cz.cvut.fit.cerveada.schela.natives.VectorNatives
 
 abstract class Environment {
 	protected val variables = scala.collection.mutable.Map[Symbol, Form]();
@@ -60,6 +61,7 @@ class TopEnvironment extends Environment {
   addVariables(EquivalenceNatives.natives)
   addVariables(InputOutputNatives.natives)
   addVariables(ListNatives.natives)
+  addVariables(VectorNatives.natives)
   
   
   private type procedureType = List[Form] => Form

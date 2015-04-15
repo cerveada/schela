@@ -19,7 +19,7 @@ class EquivalenceSpec extends UnitSpec{
      eval("(eqv? 2 2)", env) should be(Bool(true))
      eval("(eqv? '() '())", env) should be(Bool(true))
      eval("(eqv? 100000000 100000000)", env) should be(Bool(true))
-     //eval("(eqv? (cons 1 2) (cons 1 2))", env) should be(Bool(false))
+     //eval("(eqv? (cons 1 2) (cons 1 2))", env) should be(Bool(false)) //TODO cons
      eval("""
        (eqv? (lambda () 1)
           (lambda () 2))
@@ -36,7 +36,7 @@ class EquivalenceSpec extends UnitSpec{
 	  val env = new TopEnvironment()
 	  
     eval("(eq? 'a 'a)", env) should be(Bool(true))
-    //eval("(eq? (list 'a) (list 'a))", env) should be(Bool(false))
+    //eval("(eq? (list 'a) (list 'a))", env) should be(Bool(false))  //TODO list
     eval("(eq? '() '())", env) should be(Bool(true))
     eval("(eq? car car)", env) should be(Bool(true))
     eval("""
@@ -50,6 +50,26 @@ class EquivalenceSpec extends UnitSpec{
      eval("""
       (let ((p (lambda (x) x)))
         (eq? p p))                
+      """, env) should be(Bool(true))
+  }
+  
+  "An equal? " should "recursively compare the contents" in {
+	  
+	  val env = new TopEnvironment()
+	  
+    
+    eval("(equal? 'a 'a)", env) should be(Bool(true))
+    eval("(equal? '(a) '(a))", env) should be(Bool(true))
+    eval("""
+      (equal? '(a (b) c)
+        '(a (b) c))
+      """, env) should be(Bool(true))
+    eval("(equal? \"abc\" \"abc\")", env) should be(Bool(true))
+    eval("(equal? 2 2)", env) should be(Bool(true))
+
+    eval("""
+      (equal? (make-vector 5 'a)
+        (make-vector 5 'a))
       """, env) should be(Bool(true))
   }
   

@@ -1,5 +1,6 @@
 package cz.cvut.fit.cerveada.schela
 
+import scala.collection.mutable.ArraySeq
 
 trait Form  {
   def evaluate(environment: Environment) = this
@@ -65,7 +66,7 @@ object SList {
 	implicit def schemeToList(slist:SList) = slist.l
 }
 
-case class Vector(l:List[Form] = Nil) extends Form {
+case class SVector(l:ArraySeq[Form]) extends Form {
   def typeName = "vector"
   override def toString = {
     val strings = l.map { _.toString }

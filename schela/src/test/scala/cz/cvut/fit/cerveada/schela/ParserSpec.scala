@@ -1,5 +1,7 @@
 package cz.cvut.fit.cerveada.schela
 
+import scala.collection.mutable.ArraySeq
+
 class ParserSpec extends UnitSpec {
 
   "A Parser" should "parse single number" in {    
@@ -43,7 +45,7 @@ class ParserSpec extends UnitSpec {
     
     val env = new TopEnvironment;
     
-    eval("'#(1 2 3)", env) should be(Vector(Number(1) :: Number(2) :: Number(3) :: Nil))
+    eval("'#(1 2 3)", env) should equal (SVector(ArraySeq(Number(1), Number(2), Number(3))))
   }
   
 }

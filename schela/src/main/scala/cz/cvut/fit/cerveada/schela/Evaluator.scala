@@ -12,9 +12,11 @@ object Evaluator {
     case b:Bool => b
     case b:Number => b
     case b:SString => b    
+    case v:SVector => v
     case Quote(c) => c
     case SSymbol(n) => environment.get(n)
     case SList(l) => evalList(l, environment)
+    case _ => throw new SyntaxException("expression")
   }
 
   def evalList(l: List[Form], env: Environment) = l match {
