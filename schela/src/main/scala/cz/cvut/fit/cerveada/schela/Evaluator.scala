@@ -11,6 +11,7 @@ object Evaluator {
   def eval(code:Form, environment:Environment):Form = code match {
     case b:Bool => b
     case b:Number => b
+    case b:SChar => b
     case b:SString => b    
     case v:SVector => v
     case Quote(c) => c

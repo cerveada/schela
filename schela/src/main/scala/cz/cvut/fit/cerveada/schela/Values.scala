@@ -40,6 +40,25 @@ case class Bool(b: Boolean) extends Form {
   def typeName = "boolean"
 }
 
+
+
+case class SChar(value: Char) extends Form {
+	def typeName = "char"
+}
+object SChar {
+  def mapping = Map("""space""" -> ' ', """newline""" -> '\n')
+
+  def fromString(s: String) = {
+    if (s.length() == 1)
+      apply(s.toCharArray()(0))
+    else
+      mapping.get(s) match {
+        case Some(ch) => apply(ch)
+        case None     => throw new SyntaxException("char parsing")
+      }
+  }
+}
+
 case class SString(value: String) extends Form {
   def typeName = "string"
 }
@@ -50,7 +69,7 @@ case class Quote(form:Form) extends Form {
 }
 
 case class SSymbol(name:Symbol) extends Form {
-    def typeName = "symvbol"
+    def typeName = "symbol"
 }
 
 case class SList(l:List[Form] = Nil) extends Form {

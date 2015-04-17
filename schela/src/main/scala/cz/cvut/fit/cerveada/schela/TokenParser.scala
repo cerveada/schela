@@ -11,12 +11,13 @@ object TokenParser extends JavaTokenParsers  {
   
   def parseItem(str: String) = parse(code, str) 
   
-  def code:Parser[Form] = (datum | quote | list | vector)
+  def code:Parser[Form] = (datum | quote | list | hash)
+  def hash = "#" ~> (vector | char | boolean)
   
   //Data
-  def datum = (number | boolean | string | symbol)
+  def datum = (number | string | symbol)
   def number:Parser[Number] = regex(new Regex("-?[0-9]+")) ^^ (s => Number(s.toInt))
-  def boolean = ("#t" | "#f") ^^ { case "#t" => Bool(true); case "#f" => Bool(false) }
+  def boolean = ("t" | "f") ^^ { case "t" => Bool(true); case "f" => Bool(false) }
   //private def string = /*"\"" ~>*/ stringLiteral/* <~ "\""*/ ^^ { case s => SString(s) }
   def string = "\"" ~> """([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*""".r <~ "\"" ^^ 
     { case s => SString(s) }
@@ -26,6 +27,8 @@ object TokenParser extends JavaTokenParsers  {
   
   // | ! | $ | % | & | * | / | : | < | = | > | ? | ~ | _ | ^
   
+  def char = """\""" ~> """[^\s]+""".r ^^ {case v => SChar.fromString(v)}
+  
   def list = "(" ~> listContent <~ ")" ^^ {case v => SList(v)}
   def listContent:Parser[List[Form]] = rep(code)  ^^ (List() ++ _)
   
@@ -33,7 +36,7 @@ object TokenParser extends JavaTokenParsers  {
   def quoteChar:Parser[Form] = "'" ~> code ^^ (s => Quote(s)) 
   def quoteWord:Parser[Form] = "(" ~> "quote" ~> code <~ ")" ^^ (s => Quote(s)) 
   
-  def vector = "#(" ~> vectorContent <~ ")" ^^ {case v => (SVector.constant(v))}
+  def vector = "(" ~> vectorContent <~ ")" ^^ {case v => (SVector.constant(v))}
   def vectorContent:Parser[ArraySeq[Form]] = rep(code)  ^^ (ArraySeq() ++ _)
 
 }

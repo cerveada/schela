@@ -40,12 +40,25 @@ class ParserSpec extends UnitSpec {
     
     eval("'abCdEFgh", env) should be(SSymbol('abcdefgh))
   }
-  
-    "A Parser" should "parse vector" in {
-    
+
+  "A Parser" should "parse vector" in {
+
     val env = new TopEnvironment;
-    
-    eval("'#(1 2 3)", env) should equal (SVector(ArraySeq(Number(1), Number(2), Number(3))))
+
+    eval("'#(1 2 3)", env) should equal(SVector(ArraySeq(Number(1), Number(2), Number(3))))
   }
+  
+  "A Char" should "be parsed corectly" in {
+	  
+	  val env = new TopEnvironment;
+	  
+	  eval("""#\a""", env) should be(SChar('a'))
+	  eval("""#\A""", env) should be(SChar('A'))
+	  eval("""#\(""", env) should be(SChar('('))
+	  eval("""#\space""", env) should be(SChar(' '))
+	  eval("""#\newline""", env) should be(SChar('\n'))
+  }
+  
+ 
   
 }
