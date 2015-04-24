@@ -3,7 +3,6 @@ package cz.cvut.fit.cerveada.schela
 import scala.collection.mutable.ArraySeq
 
 trait Form  {
-  def evaluate(environment: Environment) = this
   def typeName(): String
 }
 
