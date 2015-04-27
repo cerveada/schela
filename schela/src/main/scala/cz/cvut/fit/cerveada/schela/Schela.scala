@@ -18,11 +18,11 @@ object Schela {
   }
 
   def parse(s: String) = {
-    val result = TokenParser.parseItem(s)
+    val result = Parser.parseItem(s)
     result match {
-      case TokenParser.Success(result, _) => println(result.toString)
-      case TokenParser.Failure(msg, _)    => throw new LispException("parsing failed: " + msg)
-      case TokenParser.Error(msg, _)      => throw new LispException("parsing error: " + msg)
+      case Parser.Success(result, _) => println(result.toString)
+      case Parser.Failure(msg, _)    => throw new LispException("parsing failed: " + msg)
+      case Parser.Error(msg, _)      => throw new LispException("parsing error: " + msg)
     }
     result.get
   }

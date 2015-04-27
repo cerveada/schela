@@ -19,8 +19,8 @@ object SymbolNatives {
 
   natives("symbol->string") = (params: List[Form]) => params match {
     case SSymbol(n) :: Nil => SString(n.name)
-    case t :: Nil         => throw new UnexpectedType(SSymbol('foo), t);
-    case _                => throw new UnexpectedNumberOfArguments(params.size, 1)
+    case t :: Nil          => throw new UnexpectedType(SSymbol('foo), t);
+    case _                 => throw new UnexpectedNumberOfArguments(params.size, 1)
   }
   
   natives("string->symbol") = (params: List[Form]) => params match {

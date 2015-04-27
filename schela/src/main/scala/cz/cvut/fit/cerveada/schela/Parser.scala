@@ -6,7 +6,7 @@ import scala.collection.mutable.ArraySeq
 import scala.collection.mutable.ArrayBuffer
 
 
-object TokenParser extends JavaTokenParsers  {
+object Parser extends JavaTokenParsers  {
   override def skipWhitespace = true
   
   def parseItem(str: String) = parse(code, str) 

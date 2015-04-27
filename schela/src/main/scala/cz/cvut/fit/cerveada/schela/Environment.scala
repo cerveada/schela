@@ -64,16 +64,17 @@ class TopEnvironment extends Environment {
   addVariables(VectorNatives.natives)
   
   
-  private type procedureType = List[Form] => Form
-  private type inMap = scala.collection.mutable.Map[String,procedureType]
-  private type outMap = scala.collection.mutable.Map[Symbol,procedureType]
-  private def toSymbolMap(map:inMap):outMap = {
-    map.map{case(k,v) => Symbol(k) -> v}
-  }
+private type procedureType = List[Form] => Form
+private type inMap = scala.collection.mutable.Map[String,procedureType]
+private type outMap = scala.collection.mutable.Map[Symbol,NativeProcedure]
+
+private def addVariables(map: inMap) {
+  variables ++= toSymbolMap(map)
+}
+private def toSymbolMap(map: inMap): outMap = {
+  map.map { case (k, v) => Symbol(k) -> NativeProcedure(v) }
+}
   
-  private def addVariables(map:inMap) {
-      variables ++= toSymbolMap(map).mapValues(NativeProcedure(_))
-  }
   
   
 }
