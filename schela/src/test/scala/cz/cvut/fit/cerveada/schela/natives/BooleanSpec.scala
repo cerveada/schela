@@ -28,7 +28,7 @@ class BooleanSpec extends UnitSpec{
 
     an[UnexpectedNumberOfArguments] should be thrownBy eval("(not)", environment)
     an[UnexpectedNumberOfArguments] should be thrownBy eval("(not #t #t)", environment)
-    eval("(not #t)", environment) should be(Bool(false))
-    eval("(not #f)", environment) should be(Bool(true))
+    resultOf("(not #t)", environment) should be(Bool(false))
+    resultOf("(not #f)", environment) should be(Bool(true))
   }
 }

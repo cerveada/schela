@@ -339,10 +339,10 @@ class NumberSpec extends UnitSpec {
 	  an[UnexpectedNumberOfArguments] should be thrownBy eval("(lcm 6)", env)
 	  an[UnexpectedType] should be thrownBy eval("(lcm 8 'a 5)", env)
 	  
-	  eval("(lcm 56 42)", env) should be(Number(168))
-	  eval("(lcm 666 128)", env) should be(Number(42624))
-	  eval("(lcm 1024 997)", env) should be(Number(1020928))
-	  eval("(lcm 36 27 45 81 )", env) should be(Number(1620))
+	  resultOf("(lcm 56 42)", env) should be(Number(168))
+	  resultOf("(lcm 666 128)", env) should be(Number(42624))
+	  resultOf("(lcm 1024 997)", env) should be(Number(1020928))
+	  resultOf("(lcm 36 27 45 81 )", env) should be(Number(1620))
   }
   
   "A floor" should "return the largest integer not larger than x" in {

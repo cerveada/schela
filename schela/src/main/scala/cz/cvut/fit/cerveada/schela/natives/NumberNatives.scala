@@ -36,6 +36,7 @@ object NumberNatives {
     }
     val result = values.sliding(2).forall {
       case a :: b :: Nil => fun(a, b)
+      case _ => throw new LispException("eror in comparsion")
     }
     Bool(result)
   }
